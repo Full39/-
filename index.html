@@ -2,57 +2,98 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>论文投稿模板下载</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026中西部无机化学研讨会通知</title>
     <style>
-        /* 页面整体样式 */
-        body {
+        /* 全局样式 */
+        * {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+        /* 页面容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
         /* 标题样式 */
-        .title {
-            color: #212529;
-            font-size: 24px;
-            margin-bottom: 30px;
+        .page-title {
             text-align: center;
-            padding: 0 20px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        /* PDF预览区域 */
+        .pdf-preview-box {
+            width: 100%;
+            height: 700px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
         }
         /* 下载按钮样式 */
-        .download-btn {
-            width: 280px;
-            height: 60px;
-            line-height: 60px;
+        .download-button {
+            display: block;
+            width: 220px;
+            height: 50px;
+            line-height: 50px;
             text-align: center;
-            background-color: #0d6efd;
+            background-color: #1677ff;
             color: white;
             text-decoration: none;
-            border-radius: 10px;
-            font-size: 20px;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+            border-radius: 8px;
+            font-size: 18px;
+            margin: 0 auto;
             transition: background-color 0.3s;
         }
-        .download-btn:hover {
-            background-color: #0b5ed7;
+        .download-button:hover {
+            background-color: #0958d9;
+        }
+        /* 兼容提示 */
+        .tip-text {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h1 class="title">中西部无机化学2026论文摘要投稿模板</h1>
-    <!-- 仅保留Word文件下载按钮 -->
-    <a 
-        href="中西部无机化学2026论文摘要投稿模板.docx" 
-        download="中西部无机化学2026论文摘要投稿模板.docx" 
-        class="download-btn"
-    >
-        点击下载Word模板
-    </a>
+    <div class="container">
+        <!-- 页面标题 -->
+        <h1 class="page-title">中国化学会2026年中西部无机化学化工学术研讨会（第一轮通知）</h1>
+        
+        <!-- PDF在线预览核心区域 -->
+        <div class="pdf-preview-box">
+            <iframe 
+                src="https://docs.google.com/gview?url=https://full39.github.io/hello/中国化学会2026年中西部无机化学化工学术研讨会（第一轮通知）.pdf&embedded=true" 
+                width="100%" 
+                height="100%"
+                frameborder="0"
+            >
+                您的浏览器暂不支持PDF在线预览，请点击下方按钮下载查看
+            </iframe>
+        </div>
+
+        <!-- 下载按钮 -->
+        <a 
+            href="中国化学会2026年中西部无机化学化工学术研讨会（第一轮通知）.pdf" 
+            download="中国化学会2026年中西部无机化学化工学术研讨会（第一轮通知）.pdf" 
+            class="download-button"
+        >
+            点击下载PDF文件
+        </a>
+
+        <!-- 兼容提示 -->
+        <p class="tip-text">提示：下载后的文件可使用PDF阅读器（如Adobe Acrobat、WPS）打开</p>
+    </div>
 </body>
 </html>
