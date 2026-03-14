@@ -1,129 +1,287 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>研讨会PDF预览与下载</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国化学会2026年中西部无机化学化工学术研讨会 - 文件下载与预览</title>
     <style>
-        /* 全局样式 */
-        body {
-            font-family: "Microsoft Yahei", sans-serif;
-            background-color: #f5f7fa;
+        /* 全局重置与基础样式 */
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
             padding: 20px;
+            line-height: 1.6;
+        }
+
+        /* 容器：居中+最大宽度 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            gap: 20px;
         }
-        /* 容器卡片 */
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            width: 90%;
-            max-width: 1000px;
-            margin-bottom: 20px;
-        }
-        /* 标题样式 */
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 24px;
-            font-size: 24px;
-        }
-        /* 按钮组 */
-        .btn-group {
+
+        /* 顶部按钮区：弹性布局，防止变形 */
+        .button-group {
             display: flex;
             gap: 16px;
-            justify-content: center;
-            margin-bottom: 24px;
+            flex-wrap: wrap; /* 小屏幕自动换行 */
+            justify-content: center; /* 居中显示 */
         }
+
         .btn {
             padding: 12px 24px;
             border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        .download-btn {
-            background-color: #28a745;
-            color: #fff;
-        }
-        .download-btn:hover {
-            background-color: #218838;
-        }
-        .preview-btn {
-            background-color: #007bff;
-            color: #fff;
-        }
-        .preview-btn:hover {
-            background-color: #0056b3;
-        }
-        /* PDF 容器（自适应高度） */
-        .pdf-container {
-            width: 100%;
-            height: 600px;
-            border: 1px solid #eee;
             border-radius: 8px;
-            overflow: hidden;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        embed {
-            width: 100%;
-            height: 100%;
+
+        .btn-download {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-preview {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* 预览区域：铺满剩余空间，响应式 */
+        .preview-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            flex: 1; /* 占满剩余高度 */
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-height: 600px; /* 最小高度，防止过矮 */
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .preview-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .btn-close {
+            background: #6c757d;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
             border: none;
         }
-        /* 响应式：小屏幕下调整高度 */
+
+        .preview-area {
+            flex: 1; /* 占满剩余空间 */
+            position: relative;
+            overflow: auto; /* 内容超出时滚动 */
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+
+        .preview-iframe {          width: 100%;
+  
+            height: 100%;
+            border: none;
+            display: none; /* 初始隐藏，加载完成后显示 */
+        }
+
+        .loading {
+            position: absolute
+  ;          top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 底部下载按钮：固定在页面最下方 */
+        .bottom-download {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #28a745;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: none; /* 初始隐藏，预览加载完成后显示 */
+            z-index: 100; /* 确保在最上层 */
+        }
+
+        .bottom-download:hover {
+            opacity: 0.9;
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        /* 响应式调整：小屏幕适配 */
         @media (max-width: 768px) {
-            .pdf-container {
-                height: 400px;
+            .container {
+                padding: 10px;
+            }
+            .button-group {
+                flex-direction: column; /* 小屏幕按钮垂直排列 */
             }
             .btn {
-                padding: 10px 20px;
-                font-size: 14px;
+                width: 100%; /* 按钮占满宽度 */
+                justify-content: center;
+            }
+            .preview-container {
+                min-height: 400px; /* 小屏幕降低最小高度 */
             }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>中国化学会2026年中西部无机化学化工学术研讨会</h1>
-        
-        <!-- 操作按钮：下载 + 预览 -->
-        <div class="btn-group">
-            <!-- 下载按钮（需确保PDF文件名正确） -->
-            <a 
-                href="中国化学会2026年中西部无机化学化工学术研讨会（第一轮通知）.pdf" 
-                class="btn download-btn" 
-                download="中国化学会2026年中西部无机化学化工学术研讨会（第一轮通知）.pdf"
-            >
-                下载PDF
-            </a>
-            
-            <!-- 预览按钮（点击后嵌入PDF） -->
-            <button class="btn preview-btn" onclick="previewPDF()">
-                在线预览
-           button>
-      </   </div>
+    <div class="container">
+        <!-- 顶部按钮区 -->
+        <div class="button-group">
+            <button class="btn btn-download" id="downloadBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                </svg>
+                下载文件
+            </button>
+            <button class="btn btn-preview" id="previewBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                </svg>
+                预览文件
+            </button>
+        </div>
 
-        <!-- PDF 预览区域（默认隐藏） -->
-        <div class="pdf-container" id="pdfPreview" style="display: none;">
-            <embed 
-                id="pdfEmbed" 
-                src="" 
-                type="application/pdf" 
-            />
+        <!-- 预览区域 -->
+        <div class="preview-container">
+            <div class="preview-header">
+                <div class="preview-title">文件预览</div>
+                <button class="btn-close" id="closePreviewBtn">关闭</button>
+            </div>
+            <div class="preview-area" id="previewArea">
+                <div class="loading" id="loading">
+                    <div class="loading-spinner"></div>
+                    正在加载预览...
+                </div>
+                <iframe 
+                    id="previewIframe" 
+                    class="preview-iframe" 
+                    src="" 
+                    frameborder="0"
+                ></iframe>
+            </div>
         </div>
     </div>
 
+    <!-- 底部固定下载按钮 -->
+    <button class="bottom-download" id="bottomDownloadBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+        </svg>
+        下载PDF
+    </button>
+
     <script>
-        // 预览PDF的函数：设置embed的src并显示容器
-        function previewPDF() {
-            const pdfPath = "中国化学会2026年中西部无机化学化工学术研讨会（第一轮通知）.pdf";
-            document.getElementById("pdfEmbed").src = pdfPath;
-            document.getElementById("pdfPreview").style.display = "block";
-        }
+        // 配置：替换为你的PDF文件名（建议重命名为无空格/特殊字符的文件，如 chem2026.pdf）
+        const PDF_FILE_NAME = "中国化学会2026年中西部无机化学化工学术研讨会（第一轮通知）.pdf"; 
+        const PDF_URL = PDF_FILE_NAME; // GitHub Pages 中，文件与 index.html 同目录时，直接用文件名
+
+        // DOM 元素
+        const downloadBtn = document.getElementById('downloadBtn');
+        const previewBtn = document.getElementById('previewBtn');
+        const closePreviewBtn = document.getElementById('closePreviewBtn');
+        const bottomDownloadBtn = document.getElementById('bottomDownloadBtn');
+        const previewArea = document.getElementById('previewArea');
+        const previewIframe = document.getElementById('previewIframe');
+        const loading = document.getElementById('loading');
+
+        // 下载功能
+        downloadBtn.addEventListener('click', () => {
+            window.open(PDF_URL, '_blank');
+        });
+
+        bottomDownloadBtn.addEventListener('click', () => {
+            window.open(PDF_URL, '_blank');
+        });
+
+        // 预览功能
+        previewBtn.addEventListener('click', () => {
+            // 显示加载状态
+            loading.style.display = 'block';
+            previewIframe.style.display = 'none';
+            
+            // 设置 iframe 源（加载PDF）
+            previewIframe.src = PDF_URL;
+            
+            // 监听 iframe 加载完成事件
+            previewIframe.onload = () => {
+                loading.style.display = 'none';
+                previewIframe.style.display = 'block';
+                bottomDownloadBtn.style.display = 'block'; // 显示底部下载按钮
+            };
+            
+            // 监听加载错误（如文件不存在）
+            previewIframe.onerror = () => {
+                loading.style.display = 'none';
+                previewArea.innerHTML = '<p style="text-align: center; color: red;">预览加载失败，请检查文件是否存在或路径是否正确。';
+            };
+        });
+
+        // 关闭预览
+        closePreviewBtn.addEventListener('click', () => {
+            previewIframe.src = ''; // 清空源，停止加载
+            previewIframe.style.display = 'none';
+            loading.style.display = 'block'; // 重置为加载状态
+            bottomDownloadBtn.style.display = 'none'; // 隐藏底部下载按钮
+        });
     </script>
 </body>
 </html>
